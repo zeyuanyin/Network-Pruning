@@ -1,3 +1,5 @@
+# Modified from https://github.com/pytorch/examples/tree/main/imagenet
+
 import argparse
 import os
 import random
@@ -25,7 +27,6 @@ from torch.utils.data import Subset
 
 from tqdm import tqdm
 
-from resnet import build_resnet
 
 model_names = sorted(name for name in models.__dict__
     if name.islower() and not name.startswith("__")
@@ -83,7 +84,8 @@ parser.add_argument('--multiprocessing-distributed', action='store_true',
                          'multi node data parallel training')
 parser.add_argument('--dummy', action='store_true', help="use fake data to benchmark")
 parser.add_argument('-o','--output_dir', type=str, default='results')
-
+parser.add_argument('--p_prune', type=float, default=0.1)
+parser.add_argument('--p_bern', type=float, default=1.)
 
 best_acc1 = 0
 
@@ -192,12 +194,12 @@ def main_worker(gpu, ngpus_per_node, args):
         num_workers=args.workers, pin_memory=True, sampler=None)
 
 
-    from pruning import prune_neuron, prune_connection
-    # model = prune_neuron(model)
-    model = prune_connection(model)
+    from prune import prune_neuron, prune_connection
+    model = prune_neuron(model,p_prune = args.p_prune, p_bern = args.p_bern)
+    # model = prune_connection(model,p_prune = args.p_prune, p_bern = args.p_bern)
 
     top1 = validate(val_loader, model, criterion, args)
-    print('data:{}, pretrain-model:{}\n top1:{}'.format(args.data, args.pretrained, top1))
+    print('data:{}\npretrain-model:{}\ntop1:{}'.format(args.data, args.arch, top1))
     return
 
 def validate(val_loader, model, criterion, args):
@@ -217,8 +219,8 @@ def validate(val_loader, model, criterion, args):
                 output = model(images)
 
                 loss = criterion(output, target)
-                if i%1000==0:
-                    print("loss: ", loss)
+                # if i%1000==0:
+                #     print("loss: ", loss)
 
                 # measure accuracy and record loss
                 acc1, acc5 = accuracy(output, target, topk=(1, 5))
@@ -226,7 +228,7 @@ def validate(val_loader, model, criterion, args):
                 top1.update(acc1[0], images.size(0))
                 top5.update(acc5[0], images.size(0))
 
-                measure elapsed time
+                # measure elapsed time
                 batch_time.update(time.time() - end)
                 end = time.time()
 
