@@ -1,8 +1,11 @@
 # network-prune
 
-Using `torch.nn.utils.prune` to implement the netwoek prune, the implement details follow the Section 3.2 in [Enhancing Targeted Attack Transferability via Diversified Weight Pruning](https://arxiv.org/abs/2208.08677).
+Using `torch.nn.utils.prune` to implement the network pruning, the implement details follow the Section 3.2 in [Enhancing Targeted Attack Transferability via Diversified Weight Pruning](https://arxiv.org/abs/2208.08677).
 
-
+<p align="center">
+  <img src="https://github.com/zeyuanyin/network-prune/blob/main/img/algorithm_1.png" width="400" alt="Image 1" />
+  <img src="https://github.com/zeyuanyin/network-prune/blob/main/img/algorithm_2.png" width="400" alt="Image 2" /> 
+</p>
 
 ## Evaluation of pruned networks
 
@@ -12,7 +15,7 @@ https://github.com/zeyuanyin/network-prune/blob/1f0641dd28da6a621c1d2db43980a6f6
 
 Run the script
 ```
-python eval.py --arch=resnet --p_prune=0.2 --p_bern=0.5
+python eval.py --arch=resnet18 --p_prune=0.2 --p_bern=1
 ```
 
 ## prune connections
@@ -45,5 +48,6 @@ python eval.py --arch=resnet --p_prune=0.2 --p_bern=0.5
 
 ## Reference
 
-[Enhancing Targeted Attack Transferability via Diversified Weight Pruning](https://arxiv.org/abs/2208.08677)
-[Learning both Weights and Connections for Efficient Neural Network](https://proceedings.neurips.cc/paper/2015/hash/ae0eb3eed39d2bcef4622b2499a05fe6-Abstract.html)
+Wang, Hung-Jui, Yu-Yu Wu, and Shang-Tse Chen. "Enhancing Targeted Attack Transferability via Diversified Weight Pruning." arXiv preprint arXiv:2208.08677 (2022).
+
+Han, Song, et al. "Learning both weights and connections for efficient neural network." Advances in neural information processing systems 28 (2015).
