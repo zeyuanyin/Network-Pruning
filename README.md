@@ -1,14 +1,21 @@
 # network-prune
 
+Using `torch.nn.utils.prune` to implement the netwoek prune, the implement details follow the Section 3.2 in [Enhancing Targeted Attack Transferability via Diversified Weight Pruning](https://arxiv.org/abs/2208.08677).
+
+
+
 ## Evaluation of pruned networks
 
-Change the the pruned method 'prune connections' or 'prune neurons' in the file 'eval.py'.
+Choose pruned method `prune connections` or `prune neurons` in the file `eval.py`.
 
+https://github.com/zeyuanyin/network-prune/blob/1f0641dd28da6a621c1d2db43980a6f6a7756e9d/eval.py#L197-L199
+
+Run the script
 ```
 python eval.py --arch=resnet --p_prune=0.2 --p_bern=0.5
 ```
 
-### prune connections
+## prune connections
 | network | p_prune | p_bern | pruning ratio | eval performance|
 |:-------:|:-------:|:---------------:|:---------------:|:------------:|
 | resnet18 | 0 | 0 | 0 | Loss 1.247      Acc@1 69.758    Acc@5 89.078 |
@@ -23,7 +30,7 @@ python eval.py --arch=resnet --p_prune=0.2 --p_bern=0.5
 | resnet50 | 0.3 | 1 | 30% | Loss 0.978      Acc@1 75.646    Acc@5 92.732 |
 | resnet50 | 0.4 | 1 | 40% | Loss 1.006      Acc@1 75.054    Acc@5 92.384 |
 
-### prune neurons
+## prune neurons
 | network | p_prune | p_bern | pruning ratio | eval performance|
 |:-------:|:-------:|:---------------:|:---------------:|:------------:|
 | resnet18 | 0 | 0 | 0 | Loss 1.247      Acc@1 69.758    Acc@5 89.078 |
@@ -35,3 +42,8 @@ python eval.py --arch=resnet --p_prune=0.2 --p_bern=0.5
 | resnet50 | 0.05 | 1 | 5% | Loss 0.980      Acc@1 75.536    Acc@5 92.596 |
 | resnet50 | 0.08 | 1 | 8% | Loss 1.784      Acc@1 59.102    Acc@5 81.838 |
 | resnet50 | 0.1 | 1 | 10% | Loss 8.296      Acc@1 2.480     Acc@5 6.466 |
+
+## Reference
+
+[Enhancing Targeted Attack Transferability via Diversified Weight Pruning](https://arxiv.org/abs/2208.08677)
+[Learning both Weights and Connections for Efficient Neural Network](https://proceedings.neurips.cc/paper/2015/hash/ae0eb3eed39d2bcef4622b2499a05fe6-Abstract.html)
