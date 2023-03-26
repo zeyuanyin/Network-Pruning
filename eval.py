@@ -194,9 +194,11 @@ def main_worker(gpu, ngpus_per_node, args):
         num_workers=args.workers, pin_memory=True, sampler=None)
 
 
-    from prune import prune_neuron, prune_connection
+    from prune import prune_neuron, prune_connection, restore_weight
     model = prune_neuron(model,p_prune = args.p_prune, p_bern = args.p_bern)
     # model = prune_connection(model,p_prune = args.p_prune, p_bern = args.p_bern)
+
+    # model = restore_weight(model)
 
     top1 = validate(val_loader, model, criterion, args)
     print('data:{}\npretrain-model:{}\ntop1:{}'.format(args.data, args.arch, top1))

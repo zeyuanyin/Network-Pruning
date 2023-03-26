@@ -97,3 +97,11 @@ def prune_neuron(model, p_prune = 0.3, p_bern = 1.):
 
     return model
 
+def restore_weight(model):
+    for module in model.modules():
+        if isinstance(module, nn.Conv2d) and  prune.is_pruned(module):
+            orig = module.weight_orig.clone() # must use .clone()
+            prune.remove(module, 'weight') # remove the mask & forward hook
+            module.weight = nn.Parameter(orig)
+
+    return model

@@ -4,7 +4,7 @@ Using `torch.nn.utils.prune` to implement the network pruning, the implement det
 
 <p align="center">
   <img src="https://github.com/zeyuanyin/network-prune/blob/main/img/algorithm_1.png" width="400" alt="Image 1" />
-  <img src="https://github.com/zeyuanyin/network-prune/blob/main/img/algorithm_2.png" width="400" alt="Image 2" /> 
+  <img src="https://github.com/zeyuanyin/network-prune/blob/main/img/algorithm_2.png" width="400" alt="Image 2" />
 </p>
 
 ## Evaluation of pruned networks
@@ -46,7 +46,22 @@ python eval.py --arch=resnet18 --p_prune=0.2 --p_bern=1
 | resnet50 | 0.08 | 1 | 8% | Loss 1.784      Acc@1 59.102    Acc@5 81.838 |
 | resnet50 | 0.1 | 1 | 10% | Loss 8.296      Acc@1 2.480     Acc@5 6.466 |
 
+## Restore weights
+
+Original weights are stored in `module.weight_orig` while `module.weight` has been replaced by pruned weights.
+
+- save the cloned `module.weight_orig` in `orig`
+- use `torch.nn.utils.prune.remove` to remove the mask & forward hook
+- replace `module.weight` with `orig`.
+
+https://github.com/zeyuanyin/network-prune/blob/6e8595206c80dcd437f845b47ca554494d011670/prune.py#L103-105
+
+
+Another way is to reload the original weights from scratch.
+
 ## Reference
+
+https://pytorch.org/tutorials/intermediate/pruning_tutorial.html#remove-pruning-re-parametrization
 
 Wang, Hung-Jui, Yu-Yu Wu, and Shang-Tse Chen. "Enhancing Targeted Attack Transferability via Diversified Weight Pruning." arXiv preprint arXiv:2208.08677 (2022).
 
