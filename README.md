@@ -11,7 +11,7 @@ Using `torch.nn.utils.prune` to implement the network pruning, the implement det
 
 Choose pruned method `prune connections` or `prune neurons` in the file `eval.py`.
 
-https://github.com/zeyuanyin/network-prune/blob/1f0641dd28da6a621c1d2db43980a6f6a7756e9d/eval.py#L197-L199
+https://github.com/zeyuanyin/network-prune/blob/3864370df119b4c1457bd714c2749d45eeac3149/eval.py#L197-L201
 
 Run the script
 ```
@@ -48,13 +48,13 @@ python eval.py --arch=resnet18 --p_prune=0.2 --p_bern=1
 
 ## Restore weights
 
-Original weights are stored in `module.weight_orig` while `module.weight` has been replaced by pruned weights.
+After applying `prune.CustomFromMask`, original weights are stored in `module.weight_orig` while `module.weight` has been replaced by pruned weights.
 
 - save the cloned `module.weight_orig` in `orig`
 - use `torch.nn.utils.prune.remove` to remove the mask & forward hook
 - replace `module.weight` with `orig`.
 
-https://github.com/zeyuanyin/network-prune/blob/6e8595206c80dcd437f845b47ca554494d011670/prune.py#L103-105
+https://github.com/zeyuanyin/network-prune/blob/3864370df119b4c1457bd714c2749d45eeac3149/prune.py#L103-L105
 
 
 Another way is to reload the original weights from scratch.
