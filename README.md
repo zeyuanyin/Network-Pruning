@@ -37,8 +37,8 @@ python eval.py --arch=resnet18 --p_prune=0.2 --p_bern=1
 | network | p_prune | p_bern | pruning ratio | eval performance|
 |:-------:|:-------:|:---------------:|:---------------:|:------------:|
 | resnet18 | 0 | 0 | 0 | Loss 1.247      Acc@1 69.758    Acc@5 89.078 |
-| resnet18 | 0.5 | 1 | 5% | Loss 1.962      Acc@1 55.118    Acc@5 78.726 |
-| resnet18 | 0.8 | 1 | 8% | Loss 4.992      Acc@1 16.980    Acc@5 35.244 |
+| resnet18 | 0.05 | 1 | 5% | Loss 1.962      Acc@1 55.118    Acc@5 78.726 |
+| resnet18 | 0.08 | 1 | 8% | Loss 4.992      Acc@1 16.980    Acc@5 35.244 |
 | resnet18 | 1 | 1 | 10% | Loss 8.508      Acc@1 2.038     Acc@5 6.142 |
 | --- | --- | --- | --- | --- |
 | resnet50 | 0 | 0 | 0 | Loss 0.962      Acc@1 76.124    Acc@5 92.858 |
