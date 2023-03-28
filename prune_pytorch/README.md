@@ -1,44 +1,24 @@
-# Network Pruning
+# Network Pruning via torch.nn.utils.prune
 
-
-There are three files to prune a network
-
-- Global pruning (modify the weights before the forward, most common)
-  - handwritten pruning  [prune.py](prune.py)
-  - torch.nn.utils.prune  [./prune_pytorch/](./prune_pytorch/)
-- DWP pruning (modify the weights after the forward and before the backward)
-  - handwritten pruning [prune_dwp.py](prune_dwp.py)
-
-
-The implement details follow the Section 3.2 in [Enhancing Targeted Attack Transferability via Diversified Weight Pruning](https://arxiv.org/abs/2208.08677), where `p_prune` and `p_bern` are the hyperparameters to control the pruning ratio.
+Using `torch.nn.utils.prune` to implement the network pruning, the implement details follow the Section 3.2 in [Enhancing Targeted Attack Transferability via Diversified Weight Pruning](https://arxiv.org/abs/2208.08677).
 
 <p align="center">
   <img src="https://github.com/zeyuanyin/network-prune/blob/main/img/algorithm_1.png" width="400" alt="Image 1" />
   <img src="https://github.com/zeyuanyin/network-prune/blob/main/img/algorithm_2.png" width="400" alt="Image 2" />
 </p>
 
-
-
-## HOW TO USE
-
-### Global pruning
+## Evaluation of pruned networks
 
 Choose pruned method `prune connections` or `prune neurons` in the file `eval.py`.
 
 https://github.com/zeyuanyin/network-prune/blob/3864370df119b4c1457bd714c2749d45eeac3149/eval.py#L197-L201
 
-
-### DWP pruning
-```model = model_with_hook(model, p_prune = 0.7)```
-
-## Evaluation of pruned networks
-
 Run the script
 ```
 python eval.py --arch=resnet18 --p_prune=0.2 --p_bern=1
 ```
-## Results on torch.nn.utils.prune
-### prune connections
+
+## prune connections
 | network | p_prune | p_bern | pruning ratio | eval performance|
 |:-------:|:-------:|:---------------:|:---------------:|:------------:|
 | resnet18 | 0 | 0 | 0 | Loss 1.247      Acc@1 69.758    Acc@5 89.078 |
@@ -53,7 +33,7 @@ python eval.py --arch=resnet18 --p_prune=0.2 --p_bern=1
 | resnet50 | 0.3 | 1 | 30% | Loss 0.978      Acc@1 75.646    Acc@5 92.732 |
 | resnet50 | 0.4 | 1 | 40% | Loss 1.006      Acc@1 75.054    Acc@5 92.384 |
 
-### prune neurons
+## prune neurons
 | network | p_prune | p_bern | pruning ratio | eval performance|
 |:-------:|:-------:|:---------------:|:---------------:|:------------:|
 | resnet18 | 0 | 0 | 0 | Loss 1.247      Acc@1 69.758    Acc@5 89.078 |
@@ -66,7 +46,7 @@ python eval.py --arch=resnet18 --p_prune=0.2 --p_bern=1
 | resnet50 | 0.08 | 1 | 8% | Loss 1.784      Acc@1 59.102    Acc@5 81.838 |
 | resnet50 | 0.1 | 1 | 10% | Loss 8.296      Acc@1 2.480     Acc@5 6.466 |
 
-## Restore weights on torch.nn.utils.prune
+## Restore weights
 
 After applying `prune.CustomFromMask`, original weights are stored in `module.weight_orig` while `module.weight` has been replaced by pruned weights.
 
