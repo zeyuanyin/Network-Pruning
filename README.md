@@ -1,4 +1,4 @@
-# Network Pruning
+# Network Pruning (The project is in progress)
 
 
 There are three files to prune a network
