@@ -33,7 +33,7 @@ model_names = sorted(name for name in models.__dict__
     and callable(models.__dict__[name]))
 
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
-parser.add_argument('--data', default='/home/zeyuan.yin/imagenet',
+parser.add_argument('--data', default='/path/to/imagenet/',
                     help='path to dataset (default: imagenet)')
 
 parser.add_argument('-a', '--arch', metavar='ARCH', default='resnet18',
@@ -84,8 +84,10 @@ parser.add_argument('--multiprocessing-distributed', action='store_true',
                          'multi node data parallel training')
 parser.add_argument('--dummy', action='store_true', help="use fake data to benchmark")
 parser.add_argument('-o','--output_dir', type=str, default='results')
+parser.add_argument('--prune_type', type=str, choices=['global', 'gredient'])
 parser.add_argument('--p_prune', type=float, default=0.1)
 parser.add_argument('--p_bern', type=float, default=1.)
+
 
 best_acc1 = 0
 
@@ -151,9 +153,9 @@ def main_worker(gpu, ngpus_per_node, args):
                                 world_size=args.world_size, rank=args.rank)
 
 
-    # create model
+    # create pre-trained model
     print("=> using pre-trained model '{}'".format(args.arch))
-    model = models.__dict__[args.arch](pretrained=True)
+    model = models.__dict__[args.arch](weights="IMAGENET1K_V1")
 
     model = model.eval().cuda()
 
@@ -193,12 +195,12 @@ def main_worker(gpu, ngpus_per_node, args):
         val_dataset, batch_size=args.batch_size, shuffle=False,
         num_workers=args.workers, pin_memory=True, sampler=None)
 
-
-    from prune import prune_neuron, prune_connection, restore_weight
-    model = prune_neuron(model,p_prune = args.p_prune, p_bern = args.p_bern)
-    # model = prune_connection(model,p_prune = args.p_prune, p_bern = args.p_bern)
-
-    # model = restore_weight(model)
+    if args.prune_type == 'global':
+        from global_pruning import global_prune
+        model = global_prune(model, p_prune = args.p_prune, p_bern = args.p_bern)
+    elif args.prune_type == 'gredient': # same result as no pruning since the forward pass is not pruned
+        from gredient_pruning import gredient_prune
+        model = gredient_prune(model, p_prune = args.p_prune, p_bern = args.p_bern)
 
     top1 = validate(val_loader, model, criterion, args)
     print('data:{}\npretrain-model:{}\ntop1:{}'.format(args.data, args.arch, top1))
@@ -211,8 +213,8 @@ def validate(val_loader, model, criterion, args):
     def run_validate(loader, base_progress=0):
         with torch.no_grad():
             end = time.time()
-            for i, (images, target) in tqdm(enumerate(loader)):
-                i = base_progress + i
+            for images, target in tqdm(loader):
+                # i = base_progress + i
                 if torch.cuda.is_available():
                     images = images.cuda(args.gpu, non_blocking=True)
                     target = target.cuda(args.gpu, non_blocking=True)
