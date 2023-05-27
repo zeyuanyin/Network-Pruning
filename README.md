@@ -9,6 +9,19 @@ We implentment `weight pruning` (unstrctured pruning) in two senerios:
 <img width=30% src="img/plot.png"/>
 </div>
 
+
+## Unofficial Implementation of [DWP](https://arxiv.org/abs/2208.08677)
+This repo only contains the code for network pruning. For the attack code, there are a lot of open-source framework you can use, and the only modification is to apply the pruning methods on the surrogate model. Line 198-203 in [test.py](test.py) shows how to use the pruning functions.
+
+```python
+from global_pruning import global_prune
+model = global_prune(model, p_prune = args.p_prune, p_bern = args.p_bern)
+
+from gredient_pruning import gredient_prune
+model = gredient_prune(model, p_prune = args.p_prune, p_bern = args.p_bern)
+```
+
+
 ## Implemention Details
 ### 3 steps in weight pruning
 
@@ -31,7 +44,7 @@ modify the `module.weight` directly and the original weight is saved in `module.
 - pruning ratio = p_prune \* p_bern, where p_bern usually is 1.
 
 
-## Test Results
+## ImageNet Test Results
 
 Test script:
 
@@ -70,19 +83,6 @@ Large model (resnet50) is more robust to pruning, containing more redundant weig
 ### Gradient pruning (only backward)
 
 same result as no pruning since the forward pass is not pruned. It may be useful in sparse (dynamic) backpropagation in training.
-
-
-## Unofficial Implementation of [DWP](https://arxiv.org/abs/2208.08677)
-This repo only contains the code for network pruning. For the attack code, there are a lot of open-source framework you can use, and the only modification is to apply the pruning methods on the surrogate model. Line 198-203 in [test.py](test.py) shows how to use the pruning functions.
-
-```python
-from global_pruning import global_prune
-model = global_prune(model, p_prune = args.p_prune, p_bern = args.p_bern)
-
-from gredient_pruning import gredient_prune
-model = gredient_prune(model, p_prune = args.p_prune, p_bern = args.p_bern)
-```
-
 
 ## Reference
 
